@@ -8,7 +8,10 @@ use futures::StreamExt;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (resource, con) = dbus_tokio::connection::new_session_sync()?;
     tokio::spawn(async move {
-        panic!("Lost connecton to dbus: {}", resource.await);
+        use std::error::Error;
+        let err = resource.await;
+        dbg!(err.source());
+        panic!("Lost connecton to dbus: {}", err);
     });
 
     let rule = MatchRule::new()
